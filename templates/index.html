@@ -7,32 +7,52 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <img src="{{ url_for('static', filename='images/aistone_logo.png') }}" alt="AI Stone 로고" class="company-logo">
-            <h1>AI Stone</h1>
-            <p>"We don’t just use AI — we’re organized around it."</p>
-            <p>Email: aistonehub@gmail.com</p>
-        </div>
-        
-        <div class="avatar-section">
-            <video id="avatarVideo" controls muted loop autoplay class="avatar-video">
-                <source src="{{ url_for('static', filename='video/idle_avatar.mp4') }}" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-            <button id="startButton">AI Stone에 대해 질문하기</button>
-            <input type="text" id="questionInput" placeholder="궁금한 점을 입력하세요.">
-            <div class="spinner"></div> 
+    <div class="top-menu-bar">
+        <div class="logo-text">ai stone Hub</div>
+        <a href="mailto:aistonehub@gmail.com?subject=문의&body=안녕하세요." class="contact-link">contact</a>
+
+    </div>
+
+    <div class="main-heading-section">
+        <h1>
+            We don't just use <span class="highlight-orange">AI</span>.<br>
+            <span class="highlight-orange">WE'RE ORGANIZED</span> AROUND IT.
+        </h1>
+    </div>
+
+    <div class="main-content-container">
+        <div class="avatar-question-section">
+            <div class="avatar-wrapper">
+                <video id="avatarVideo" controls muted loop autoplay class="avatar-video">
+                    <source src="{{ url_for('static', filename='video/idle_avatar.mp4') }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
             </div>
+            
+            <div class="question-input-area">
+                <button id="startButton">Ask About AI Stone</button>
+                <input type="text" id="questionInput" placeholder="궁금한 점을 입력하세요." class="chat-input" disabled>
+                <div class="spinner" style="display: none;"></div>
+            </div>
+        </div>
 
         <div class="intro-text-section">
-            <h2>AI Emma 답변</h2>
+            <h2 style="font-size: 14px;">Reply from AI Emma</h2>
             <p id="responseText">
-                </p>
+                  
+            </p>
         </div>
+    </div>
+
+    <div class="footer-section">
+        <div class="footer-logo">
+  <img src="/static/images/aistone_logo.png" alt="AI Stone Hub Logo" />
+</div>
+
+        <div class="footer-email">email: aistonehub@gmail.com</div>
     </div>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
