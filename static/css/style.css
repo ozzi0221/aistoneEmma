@@ -43,14 +43,10 @@ body {
 /* 메인 제목 섹션 스타일 */
 .main-heading-section {
     text-align: left; /* 왼쪽 정렬*/
-    /* 이미지에서 제목이 전체 컨테이너 왼쪽으로 붙어있으므로 max-width와 margin-left를 활용 */
     max-width: 1200px; /* 전체 페이지 콘텐츠의 최대 너비 */
     width: 100%;
     padding: 60px 40px 40px; /* 상단 여백 조정*/
     box-sizing: border-box;
-    /* body의 align-items: center; 가 적용되므로, 실제로는 중앙에 위치하게 됩니다. */
-    /* 좌측으로 밀어내려면 body에서 align-items를 제거하거나, 이 요소에 별도의 margin-left를 줘야 합니다. */
-    /* 현재는 중앙 정렬된 넓은 영역 내에서 왼쪽 정렬된 것처럼 보이도록 조정 */
 }
 
 .main-heading-section h1 {
@@ -109,60 +105,67 @@ body {
     display: block; /* 이미지 아래 공백 제거 */
 }
 
+/* MODIFIED: .question-input-area */
 .question-input-area {
     width: 100%;
-    max-width: 400px; /* 입력 영역의 최대 너비 */
+    max-width: 480px; /* Adjust width as needed */
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px; /* 버튼과 입력창 간 간격 */
+    flex-direction: row; /* Horizontal alignment for input and button */
+    align-items: stretch; /* Make input and button same height */
+    border-radius: 25px; /* Overall rounded corners */
+    overflow: hidden; /* Clip children to the rounded shape */
+    border: 1px solid #555555; /* Border for the combined component */
 }
 
+/* MODIFIED: #questionInput */
 #questionInput {
-    width: calc(100% - 40px); /* 패딩 고려 */
+    flex-grow: 1; /* Input field takes available space */
     padding: 12px 18px;
-    border: 1px solid #555555; /* 테두리 색상*/
-    border-radius: 25px; 
+    border: none; /* Border handled by container or none if seamless */
     font-size: 1.05em;
     outline: none;
-    background-color: #222222; /* 입력창 배경색*/
-    color: #E0E0E0; /* 입력 텍스트 색상*/
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background-color: #222222; /* Dark gray background for the input field */
+    color: #E0E0E0;
+    min-width: 0; /* Allow input to shrink */
 }
 
-#questionInput:focus {
-    border-color: #FF9900; /* 포커스 시 테두리 색상을 주황색으로*/
-    box-shadow: 0 0 0 3px rgba(255, 153, 0, 0.25);
-}
+/* #questionInput:focus styling is now handled by .question-input-area:focus-within */
 
-/* 커서 깜빡임 애니메이션 (대화창 대기 상태) */
+/* 커서 깜빡임 애니메이션 (대화창 대기 상태) - This can be kept if needed for other inputs or states */
 @keyframes blink-caret {
     from, to { border-color: transparent }
     50% { border-color: #FF9900; } /* 주황색 커서*/
 }
 
-.chat-input.blinking-cursor {
-    border-right: 2px solid #FF9900; /* 깜빡이는 커서 효과를 위한 오른쪽 보더*/
+.chat-input.blinking-cursor { /* If #questionInput is also a .chat-input, this might apply */
+    border-right: 2px solid #FF9900;
     animation: blink-caret .75s step-end infinite;
 }
 
+/* NEW: Style for the container when the input inside it is focused */
+.question-input-area:focus-within {
+    border-color: #FF9900;
+    box-shadow: 0 0 0 2px rgba(255, 153, 0, 0.35); /* Adjusted focus shadow for the container */
+}
+
+/* General button styles (will be overridden by more specific styles below for the input's button) */
 button {
-    background-color: #FF9900; /* 버튼 배경색을 주황색으로*/
+    background-color: #FF9900;
     color: white;
     padding: 14px 30px;
     border: none;
-    border-radius: 25px; 
+    border-radius: 25px;
     cursor: pointer;
     font-size: 1.1em;
     font-weight: bold;
     transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 4px 10px rgba(255, 153, 0, 0.3); /* 그림자도 주황색 계열로*/
-    width: 100%; /* 너비 100%로 설정 (max-width에 따라 조절) */
-    max-width: 300px; /* 버튼 최대 너비 */
+    box-shadow: 0 4px 10px rgba(255, 153, 0, 0.3);
+    width: 100%; /* Default for other buttons, will be overridden for the specific one */
+    max-width: 300px; /* Default for other buttons */
 }
 
 button:hover {
-    background-color: #E68A00; /* 호버 시 약간 어두운 주황색*/
+    background-color: #E68A00;
     transform: translateY(-2px);
 }
 
@@ -171,12 +174,45 @@ button:active {
     box-shadow: 0 2px 5px rgba(255, 153, 0, 0.4);
 }
 
+/* MODIFIED: Specific button style for the button inside .question-input-area */
+.question-input-area button {
+    background-color: #FF9900; /* Orange background */
+    color: white;
+    padding: 14px 22px; /* Adjust padding for button text (e.g., "Ask About AI Stone") */
+    border: none; /* No border, seamless with container */
+    /* border-radius: 0 25px 25px 0; /* Rounded corners on the right, handled by parent's overflow:hidden */
+    cursor: pointer;
+    font-size: 1.05em; /* Match input or desired size */
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    width: auto; /* Button width fits its content */
+    max-width: none; /* Override general button style */
+    flex-shrink: 0; /* Prevent button from shrinking */
+    margin: 0; /* Reset margin */
+    box-shadow: none; /* Reset box-shadow from general button style */
+    transform: none; /* Reset transform from general button style */
+    /* Optional: add a subtle left border if input and button backgrounds are different and touch */
+    /* border-left: 1px solid #444; */
+}
+
+.question-input-area button:hover {
+    background-color: #E68A00; /* Darker orange on hover */
+    transform: none; /* Keep transform reset */
+}
+
+.question-input-area button:active {
+    background-color: #CC7A00; /* Even darker for active state */
+    transform: none; /* Keep transform reset */
+    box-shadow: none; /* Keep box-shadow reset */
+}
+
+
 /* 답변 섹션 */
 .intro-text-section {
     flex: 1; /* 가용한 공간을 채움 */
     min-width: 300px; /* 최소 너비 지정 */
     text-align: left;
-    background-color: #1A1A1A; /* 답변 섹션 배경색을 컨테이너와 동일하게 어둡게 변경*/
+    background-color: #1A1A1A;
     padding: 25px;
     border-radius: 10px;
     box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.2);
@@ -185,30 +221,30 @@ button:active {
 }
 
 .intro-text-section h2 {
-    color: #FF9900; /* AI EMMA 답변 제목 색상을 주황색으로*/
+    color: #FF9900;
     margin-bottom: 15px;
     font-size: 1.8em;
-    border-bottom: 2px solid #555555; /* 테두리 색상*/
+    border-bottom: 2px solid #555555;
     padding-bottom: 10px;
 }
 
 #responseText {
     line-height: 1.7;
     font-size: 1.1em;
-    color: #CCCCCC; /* 답변 텍스트 색상*/
-    white-space: pre-wrap; /* 텍스트 줄바꿈 유지 */
-    flex-grow: 1; /* 내용이 많아지면 공간을 채우도록 */
+    color: #CCCCCC;
+    white-space: pre-wrap;
+    flex-grow: 1;
 }
 
 /* 스피너 (로딩 애니메이션) 스타일 */
 .spinner {
-    border: 4px solid rgba(255, 255, 255, 0.2); /* 스피너 색상 조정*/
+    border: 4px solid rgba(255, 255, 255, 0.2);
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    border-left-color: #FF9900; /* 스피너 돌아가는 부분 색상 주황색으로 변경*/
+    border-left-color: #FF9900;
     animation: spin 1s ease infinite;
-    display: none; 
+    display: none;
     margin: 20px auto;
 }
 
@@ -227,29 +263,26 @@ button:active {
     box-sizing: border-box;
     color: #f0f2f5;
     font-size: 1em;
-    margin-top: auto; /* 하단에 고정되도록 */
+    margin-top: auto;
     gap: 10px;
 }
 
 .footer-logo {
-    /* 원래는 텍스트 로고였으나 이제 이미지 로고를 감싸므로 flexbox 등을 제거할 수 있습니다. */
-    /* 하지만 이미지를 감싸는 컨테이너로서의 역할을 위해 중앙 정렬은 유지하는 것이 좋습니다. */
     display: flex;
-    justify-content: center; /* 이미지를 중앙에 배치 */
+    justify-content: center;
     align-items: center;
-    margin-bottom: 10px; /* 로고와 이메일 텍스트 사이 간격 */
+    margin-bottom: 10px;
 }
 
-/* 푸터 로고 이미지 스타일 */
 .footer-logo img {
-    width: 150%;    /* 원래 크기의 1/2 */
-    height: auto;  /* 비율 유지 */
-    max-width: 150px; /* 너무 커지지 않도록 최대 너비 설정 (조정 가능) */
-    min-width: 80px; /* 너무 작아지지 않도록 최소 너비 설정 (조정 가능) */
+    width: 150%;
+    height: auto;
+    max-width: 150px;
+    min-width: 80px;
 }
 
 .footer-email {
-    color: #B0C4DE; /* 밝은 회색 */
+    color: #B0C4DE;
 }
 
 /* 모바일 반응형 디자인 */
@@ -264,45 +297,58 @@ button:active {
     .main-heading-section,
     .main-content-container,
     .footer-section {
-        padding: 15px 20px; /* 패딩 조정 */
+        padding: 15px 20px;
     }
 
     .main-heading-section h1 {
-        font-size: 3.5em; /* 작은 화면에서 글꼴 크기 조정 */
+        font-size: 3.5em;
     }
     .main-heading-section {
-        margin-left: auto; /* 작은 화면에서 중앙 정렬 (자동 마진) */
+        margin-left: auto;
         margin-right: auto;
     }
     .main-content-container {
-        flex-direction: column; /* 세로로 쌓이도록 */
+        flex-direction: column;
         gap: 20px;
         padding: 20px;
     }
     .avatar-question-section,
     .intro-text-section {
-        min-width: unset; /* 최소 너비 해제 */
-        width: 100%; /* 너비 100% */
+        min-width: unset;
+        width: 100%;
     }
-    button {
+    /* General button adjustments for mobile if needed, though specific one is handled */
+    /* button {
         padding: 12px 25px;
         font-size: 1em;
-    }
-    #questionInput {
+    } */
+    /* #questionInput {
         font-size: 1em;
-    }
+    } */
+    /* .question-input-area specific adjustments might be needed too if it breaks on mobile */
 }
 
 @media (max-width: 480px) {
     .main-heading-section h1 {
-        font-size: 2.5em; /* 더 작은 화면에서 글꼴 크기 조정 */
+        font-size: 2.5em;
     }
     .top-menu-bar {
-        flex-direction: column; /* 메뉴바 항목들을 세로로 정렬 */
+        flex-direction: column;
         align-items: flex-start;
         gap: 10px;
     }
     .footer-section {
         font-size: 0.9em;
+    }
+    /* Further adjustments for the input area on very small screens */
+    .question-input-area {
+        max-width: 100%; /* Allow full width */
+        /* Consider flex-direction: column if they don't fit side-by-side */
+    }
+    #questionInput, .question-input-area button {
+        font-size: 1em; /* Adjust font size for smaller screens */
+    }
+    .question-input-area button {
+        padding: 12px 15px; /* Reduce button padding */
     }
 }
