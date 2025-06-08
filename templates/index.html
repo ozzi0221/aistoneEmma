@@ -3,58 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Stone - AI 아바타 회사 소개</title>
+    <title>AI Stone - 차세대 AI 아바타 | 음성인식 대화형 인공지능 솔루션</title>
+    <meta name="description" content="AI Stone은 혁신적인 RAG 기반 AI 아바타입니다. 음성인식과 TTS를 지원하는 지능형 대화 시스템으로 기업의 고객 서비스를 혁신합니다. 실시간 음성 대화, 정확한 정보 제공, 자연스러운 아바타 인터랙션을 경험해보세요.">
+    <meta name="keywords" content="AI 아바타, 음성인식, TTS, RAG, 인공지능, 챗봇, 대화형 AI, 음성 AI, 디지털 휴먼, AI 어시스턴트">
+    <meta name="author" content="AI Stone">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="AI Stone - 차세대 AI 아바타 솔루션">
+    <meta property="og:description" content="음성인식과 자연어 처리가 결합된 혁신적인 AI 아바타. 실시간 대화와 정확한 정보 제공으로 고객 경험을 혁신합니다.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="{{ url_for('static', filename='images/aistone_logo.png') }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AI Stone - 차세대 AI 아바타">
+    <meta name="twitter:description" content="음성인식 기반 지능형 AI 아바타와 대화해보세요">
+    
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Noto+Sans+KR:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- SEO를 위한 숨겨진 회사 정보 -->
+    <div style="display: none;">
+        <h1>AI Stone - 혁신적인 AI 아바타 솔루션 전문 기업</h1>
+        <p>AI Stone은 대한민국의 선도적인 인공지능 기업으로, RAG(Retrieval-Augmented Generation) 기술과 음성인식, TTS(Text-to-Speech)를 결합한 차세대 AI 아바타 솔루션을 제공합니다. 우리의 AI 아바타는 자연스러운 음성 대화, 실시간 정보 검색, 그리고 개인화된 응답을 통해 고객 서비스의 새로운 표준을 제시합니다.</p>
+        <p>주요 기술: 음성인식(STT), 음성합성(TTS), 자연어처리(NLP), RAG 시스템, 딥러닝, 컴퓨터 비전, 대화형 AI, 실시간 음성 처리</p>
+    </div>
 </head>
 <body>
+    <!-- 상단 메뉴바 -->
     <div class="top-menu-bar">
-        <div class="logo-text">ai stone Hub</div>
-        <a href="mailto:aistonehub@gmail.com?subject=문의&body=안녕하세요." class="contact-link">contact</a>
-
+        <a href="#" class="logo-link" onclick="resetConversation()" title="새로운 대화 시작">
+            <div class="logo-text">AI Stone</div>
+        </a>
+        <a href="mailto:aistonehub@gmail.com" class="contact-link">문의하기</a>
     </div>
 
+    <!-- 메인 제목 섹션 -->
     <div class="main-heading-section">
         <h1>
-            We don't just use <span class="highlight-orange">AI</span>.<br>
-            <span class="highlight-orange">WE'RE ORGANIZED</span> AROUND IT.
+            차세대 <span class="highlight-orange">AI 아바타</span><br>
+            AI Stone과 대화하세요
         </h1>
+        <p class="hero-subtitle">음성인식과 자연어 처리가 결합된 혁신적인 대화형 AI 경험</p>
     </div>
 
+    <!-- 메인 콘텐츠 컨테이너 -->
     <div class="main-content-container">
+        <!-- 아바타 및 질문 섹션 -->
         <div class="avatar-question-section">
+            <!-- 아바타 비디오 -->
             <div class="avatar-wrapper">
-                <video id="avatarVideo" controls muted loop autoplay class="avatar-video">
-                    <source src="{{ url_for('static', filename='video/idle_avatar.mp4') }}" type="video/mp4">
-                    Your browser does not support the video tag.
+                <video 
+                    id="avatarVideo" 
+                    class="avatar-video" 
+                    muted 
+                    loop
+                    preload="auto"
+                    poster="{{ url_for('static', filename='images/avatar-poster.jpg') }}"
+                >
+                    <source src="{{ url_for('static', filename='video/idle.mp4') }}" type="video/mp4">
+                    <p>비디오를 재생할 수 없습니다. 브라우저가 HTML5 비디오를 지원하지 않습니다.</p>
                 </video>
             </div>
-            
+
+            <!-- 현대적 입력 영역 -->
             <div class="question-input-area">
-                <button id="startButton">질문하기</button> 
-                <input type="text" id="questionInput" placeholder="궁금한 점을 입력하세요." class="chat-input">
-                <div class="spinner" style="display: none;"></div>
+                <div class="input-wrapper">
+                    <textarea 
+                        id="questionInput" 
+                        placeholder="AI Stone에 대해 궁금한 것을 물어보세요..." 
+                        disabled
+                        rows="1"
+                        aria-label="질문 입력"
+                        maxlength="2000"
+                    ></textarea>
+                    <!-- 버튼들은 JavaScript에서 동적으로 생성됩니다 -->
+                </div>
+            </div>
+
+            <!-- 시작 버튼 -->
+            <button id="startButton" type="button" aria-label="대화 시작하기">
+                🚀 대화 시작하기
+            </button>
+
+            <!-- 로딩 스피너 (필요시 사용) -->
+            <div class="spinner" style="display: none;" aria-hidden="true"></div>
+        </div>
+
+        <!-- 답변 섹션 -->
+        <div class="intro-text-section">
+            <h2>💬 AI Stone과의 대화</h2>
+            <div id="responseText" role="log" aria-live="polite" aria-label="AI 응답">
+                <div class="welcome-message" style="display: none;">
+                    <h3>🤖 AI Stone에 오신 것을 환영합니다!</h3>
+                    <p>음성 또는 텍스트로 질문해보세요. 친절하고 정확한 답변을 제공해드리겠습니다.</p>
+                    <p>✨ <strong>사용 팁:</strong></p>
+                    <ul style="text-align: left; margin-top: 15px; padding-left: 20px;">
+                        <li>🎤 마이크 버튼을 클릭하여 음성으로 질문하세요</li>
+                        <li>⌨️ 키보드로 직접 입력도 가능합니다</li>
+                        <li>🚀 Enter 키로 빠르게 전송할 수 있습니다</li>
+                    </ul>
+                </div>
+                AI Stone에 대해 무엇이든 물어보세요. 회사 정보, 기술, 서비스 등 다양한 질문에 답변해드립니다.
             </div>
         </div>
+    </div>
 
-        <div class="intro-text-section">
-            <h2 style="font-size: 14px;">Reply from AI Emma</h2>
-            <p id="responseText">
-                  
-            </p>
+    <!-- 푸터 섹션 -->
+    <div class="footer-section">
+        <div class="footer-logo">
+            <img src="{{ url_for('static', filename='images/aistone_logo.png') }}" alt="AI Stone 로고" loading="lazy">
+        </div>
+        <div class="footer-email">aistonehub@gmail.com</div>
+        <div style="font-size: 0.9em; opacity: 0.7; text-align: center;">
+            © 2025 AI Stone. 모든 권리 보유. | 
+            <a href="#" style="color: inherit; text-decoration: none;">개인정보처리방침</a> | 
+            <a href="#" style="color: inherit; text-decoration: none;">이용약관</a>
         </div>
     </div>
 
-    <div class="footer-section">
-        <div class="footer-logo">
-  <img src="/static/images/aistone_logo.png" alt="AI Stone Hub Logo" />
-</div>
-
-        <div class="footer-email">email: aistonehub@gmail.com</div>
-    </div>
-
+    <!-- JavaScript -->
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+    <!-- 구조화된 데이터 (SEO 개선) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "AI Stone",
+        "description": "RAG 기반 AI 아바타 솔루션을 제공하는 혁신적인 인공지능 기업",
+        "url": "{{ request.url_root }}",
+        "logo": "{{ url_for('static', filename='images/aistone_logo.png', _external=True) }}",
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+82-10-0000-0000",
+            "contactType": "customer service",
+            "email": "aistonehub@gmail.com"
+        },
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Seoul",
+            "addressCountry": "KR"
+        },
+        "sameAs": [
+            "https://github.com/aistone",
+            "https://linkedin.com/company/aistone"
+        ],
+        "foundingDate": "2024",
+        "numberOfEmployees": "10-50",
+        "industry": "Artificial Intelligence"
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "AI Stone Avatar",
+        "description": "음성인식과 TTS를 지원하는 대화형 AI 아바타 솔루션",
+        "applicationCategory": "AI Assistant",
+        "operatingSystem": "Web Browser",
+        "browserRequirements": "Chrome 76+, Firefox 103+, Safari 9+",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "KRW"
+        },
+        "creator": {
+            "@type": "Organization",
+            "name": "AI Stone"
+        },
+        "featureList": [
+            "음성인식 (STT)",
+            "음성합성 (TTS)", 
+            "실시간 대화",
+            "RAG 기반 정보 검색",
+            "다국어 지원",
+            "아바타 애니메이션"
+        ]
+    }
+    </script>
 </body>
 </html>
