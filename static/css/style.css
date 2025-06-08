@@ -1,251 +1,585 @@
 /* static/css/style.css */
+
+/* CSS 커스텀 프로퍼티 정의 */
+:root {
+    --primary-orange: #FF9900;
+    --primary-orange-hover: #E68A00;
+    --primary-orange-dark: #CC7A00;
+    --bg-primary: #000000;
+    --bg-secondary: #1a1a1a;
+    --bg-tertiary: #2a2a2a;
+    --text-primary: #f0f2f5;
+    --text-secondary: #CCCCCC;
+    --text-muted: #888888;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --border-focus: rgba(255, 153, 0, 0.5);
+    --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-medium: 0 4px 20px rgba(0, 0, 0, 0.3);
+    --shadow-heavy: 0 8px 32px rgba(0, 0, 0, 0.4);
+    --border-radius-sm: 8px;
+    --border-radius-md: 12px;
+    --border-radius-lg: 20px;
+    --border-radius-xl: 30px;
+    --transition-fast: 0.15s ease-out;
+    --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 body {
-    font-family: 'Noto Sans KR', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Noto Sans KR', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #000000; /* 완전한 검은색 배경*/
-    color: #f0f2f5; /* 기본 글자색 (밝은 회색)*/
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    color: var(--text-primary);
     display: flex;
-    flex-direction: column; /* 자식 요소들을 세로로 정렬*/
-    align-items: center; /* 가로 중앙 정렬*/
+    flex-direction: column;
+    align-items: center;
     min-height: 100vh;
     line-height: 1.6;
     box-sizing: border-box;
+    font-feature-settings: 'kern' 1, 'liga' 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-/* 상단 메뉴바 스타일 */
+/* 상단 메뉴바 */
 .top-menu-bar {
     width: 100%;
     display: flex;
-    justify-content: space-between; /* 양 끝 정렬*/
+    justify-content: space-between;
     align-items: center;
-    padding: 20px 40px; /* 상하 20px, 좌우 40px 여백*/
+    padding: 20px 40px;
     box-sizing: border-box;
-    color: #f0f2f5; /* 메뉴바 텍스트 색상*/
-    font-size: 1.1em;
+    color: var(--text-secondary);
+    font-size: 1.05em;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.logo-link {
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition-normal);
+    border-radius: var(--border-radius-md);
+    padding: 8px 12px;
+    margin: -8px -12px;
+}
+
+.logo-link:hover {
+    background: rgba(255, 153, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+.logo-link:hover .logo-text {
+    color: var(--primary-orange);
 }
 
 .top-menu-bar .logo-text {
-    font-weight: bold;
-    color: #f0f2f5; /* 흰색 유지. 이미지와 같이 주황색으로 하려면 #FF9900 */
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: var(--transition-normal);
 }
 
 .top-menu-bar .contact-link {
-    color: #f0f2f5;
+    color: var(--text-secondary);
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: var(--transition-normal);
+    padding: 8px 16px;
+    border-radius: var(--border-radius-lg);
+    font-weight: 500;
 }
 
 .top-menu-bar .contact-link:hover {
-    color: #FF9900;
+    color: var(--primary-orange);
+    background: rgba(255, 153, 0, 0.1);
+    transform: translateY(-1px);
 }
 
-/* 메인 제목 섹션 스타일 */
+/* 히어로 서브타이틀 추가 */
+.hero-subtitle {
+    font-size: 1.3em;
+    color: var(--text-muted);
+    margin-top: 20px;
+    font-weight: 400;
+    line-height: 1.5;
+    max-width: 600px;
+}
+
+/* 메인 제목 섹션 */
 .main-heading-section {
-    text-align: left; /* 왼쪽 정렬*/
-    max-width: 1200px; /* 전체 페이지 콘텐츠의 최대 너비 */
+    text-align: left;
+    max-width: 1200px;
     width: 100%;
-    padding: 60px 40px 40px; /* 상단 여백 조정*/
+    padding: 60px 40px 40px;
     box-sizing: border-box;
 }
 
 .main-heading-section h1 {
-    font-family: 'Montserrat', 'Arial Black', Gadget, sans-serif; /* 이미지와 유사한 두꺼운 폰트*/
-    font-size: 5.5em; /* 글꼴 크기 매우 크게 설정*/
-    font-weight: 900; /* 폰트 두께 매우 두껍게*/
-    line-height: 1.1; /* 줄 간격 조정*/
-    color: #f0f2f5; /* 기본 텍스트 색상은 밝은 색*/
-    text-transform: none; /* HTML에서 직접 대소문자 설정*/
-    margin: 0; /* h1 기본 마진 제거 */
+    font-family: 'Montserrat', 'Inter', system-ui, sans-serif;
+    font-size: 5.5em;
+    font-weight: 900;
+    line-height: 1.1;
+    color: var(--text-primary);
+    margin: 0;
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    letter-spacing: -0.02em;
 }
 
-/* 주황색 강조 텍스트 */
 .highlight-orange {
-    color: #FF9900; /* 이미지에서 보이는 주황색*/
+    color: var(--primary-orange);
+    background: linear-gradient(135deg, var(--primary-orange), #FFB84D);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-/* 주요 콘텐츠를 담는 컨테이너 */
+@supports not (-webkit-background-clip: text) {
+    .highlight-orange {
+        color: var(--primary-orange);
+        background: none;
+        -webkit-text-fill-color: inherit;
+    }
+}
+
+/* 메인 콘텐츠 컨테이너 */
 .main-content-container {
-    background-color: #1A1A1A; /* 어두운 배경색*/
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* 진한 그림자*/
-    max-width: 900px; /* 콘텐츠 영역의 최대 너비*/
+    background: linear-gradient(145deg, var(--bg-secondary), var(--bg-tertiary));
+    padding: 40px;
+    border-radius: var(--border-radius-lg);
+    box-shadow: 
+        var(--shadow-heavy),
+        0 2px 8px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    max-width: 1000px;
     width: 100%;
     box-sizing: border-box;
-    margin-bottom: 40px; /* 푸터와의 간격 */
-    display: flex; /* 아바타/질문 섹션과 답변 섹션을 가로로 배치하기 위함 */
-    flex-wrap: wrap; /* 작은 화면에서 줄바꿈 */
-    justify-content: center; /* 콘텐츠 중앙 정렬 */
-    gap: 30px; /* 섹션 간 간격 */
+    margin-bottom: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px;
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
 }
 
 /* 아바타 및 질문 섹션 */
 .avatar-question-section {
-    flex: 1; /* 가용한 공간을 채움 */
-    min-width: 300px; /* 최소 너비 지정 */
+    flex: 1;
+    min-width: 350px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px; /* 요소들 간의 간격 */
+    gap: 30px;
     text-align: center;
 }
 
 .avatar-wrapper {
     width: 100%;
-    max-width: 400px; /* 아바타 이미지/비디오의 최대 너비 */
-    border-radius: 10px;
-    overflow: hidden; /* 비디오 모서리 둥글게 처리 */
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+    max-width: 400px;
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+.avatar-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(255, 153, 0, 0.08), rgba(255, 153, 0, 0.03));
+    pointer-events: none;
+    z-index: 1;
 }
 
 .avatar-video {
     width: 100%;
     height: auto;
-    display: block; /* 이미지 아래 공백 제거 */
+    display: block;
+    position: relative;
+    z-index: 0;
 }
 
-/* MODIFIED: .question-input-area */
+/* 현대적 입력 영역 - ChatGPT 스타일 */
 .question-input-area {
+    position: relative;
     width: 100%;
-    max-width: 480px; /* Adjust width as needed */
-    display: flex;
-    flex-direction: row; /* Horizontal alignment for input and button */
-    align-items: stretch; /* Make input and button same height */
-    border-radius: 25px; /* Overall rounded corners */
-    overflow: hidden; /* Clip children to the rounded shape */
-    border: 1px solid #555555; /* Border for the combined component */
+    max-width: 600px;
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-xl);
+    padding: 4px;
+    transition: var(--transition-normal);
+    box-shadow: var(--shadow-light);
 }
 
-/* MODIFIED: #questionInput */
-#questionInput {
-    flex-grow: 1; /* Input field takes available space */
-    padding: 12px 18px;
-    border: none; /* Border handled by container or none if seamless */
-    font-size: 1.05em;
-    outline: none;
-    background-color: #222222; /* Dark gray background for the input field */
-    color: #E0E0E0;
-    min-width: 0; /* Allow input to shrink */
-}
-
-/* #questionInput:focus styling is now handled by .question-input-area:focus-within */
-
-/* 커서 깜빡임 애니메이션 (대화창 대기 상태) - This can be kept if needed for other inputs or states */
-@keyframes blink-caret {
-    from, to { border-color: transparent }
-    50% { border-color: #FF9900; } /* 주황색 커서*/
-}
-
-.chat-input.blinking-cursor { /* If #questionInput is also a .chat-input, this might apply */
-    border-right: 2px solid #FF9900;
-    animation: blink-caret .75s step-end infinite;
-}
-
-/* NEW: Style for the container when the input inside it is focused */
 .question-input-area:focus-within {
-    border-color: #FF9900;
-    box-shadow: 0 0 0 2px rgba(255, 153, 0, 0.35); /* Adjusted focus shadow for the container */
-}
-
-/* General button styles (will be overridden by more specific styles below for the input's button) */
-button {
-    background-color: #FF9900;
-    color: white;
-    padding: 14px 30px;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    font-size: 1.1em;
-    font-weight: bold;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 4px 10px rgba(255, 153, 0, 0.3);
-    width: 100%; /* Default for other buttons, will be overridden for the specific one */
-    max-width: 300px; /* Default for other buttons */
-}
-
-button:hover {
-    background-color: #E68A00;
+    border-color: var(--border-focus);
+    box-shadow: 
+        0 0 0 3px rgba(255, 153, 0, 0.2),
+        0 8px 25px rgba(255, 153, 0, 0.15);
     transform: translateY(-2px);
 }
 
-button:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 5px rgba(255, 153, 0, 0.4);
+.question-input-area.active {
+    animation: inputActivate 0.6s ease-out;
 }
 
-/* MODIFIED: Specific button style for the button inside .question-input-area */
-.question-input-area button {
-    background-color: #FF9900; /* Orange background */
-    color: white;
-    padding: 14px 22px; /* Adjust padding for button text (e.g., "Ask About AI Stone") */
-    border: none; /* No border, seamless with container */
-    /* border-radius: 0 25px 25px 0; /* Rounded corners on the right, handled by parent's overflow:hidden */
+@keyframes inputActivate {
+    from {
+        opacity: 0.7;
+        transform: scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* 입력 필드와 버튼들을 감싸는 컨테이너 */
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: var(--bg-secondary);
+    border-radius: calc(var(--border-radius-xl) - 4px);
+    padding: 12px 16px;
+    min-height: 48px;
+    box-sizing: border-box;
+}
+
+/* 메인 입력 필드 */
+#questionInput {
+    flex: 1;
+    border: none;
+    background: transparent;
+    color: var(--text-primary);
+    font-size: 16px;
+    font-family: inherit;
+    line-height: 1.5;
+    padding: 8px 12px;
+    outline: none;
+    resize: none;
+    min-height: 24px;
+    max-height: 120px;
+    overflow-y: auto;
+    word-wrap: break-word;
+}
+
+#questionInput::placeholder {
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+#questionInput:focus::placeholder {
+    color: rgba(136, 136, 136, 0.7);
+}
+
+/* 음성 인식 중 애니메이션 */
+#questionInput.listening {
+    background: linear-gradient(90deg, 
+        rgba(255, 153, 0, 0.08) 0%, 
+        rgba(255, 153, 0, 0.04) 50%, 
+        rgba(255, 153, 0, 0.08) 100%);
+    background-size: 200% 100%;
+    animation: listeningPulse 2s ease-in-out infinite;
+}
+
+@keyframes listeningPulse {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* 입력창 내부 버튼 컨테이너 */
+.input-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 8px;
+}
+
+/* 입력창 내부 아이콘 버튼들 */
+.input-icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: var(--bg-tertiary);
+    color: var(--text-muted);
     cursor: pointer;
-    font-size: 1.05em; /* Match input or desired size */
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-    width: auto; /* Button width fits its content */
-    max-width: none; /* Override general button style */
-    flex-shrink: 0; /* Prevent button from shrinking */
-    margin: 0; /* Reset margin */
-    box-shadow: none; /* Reset box-shadow from general button style */
-    transform: none; /* Reset transform from general button style */
-    /* Optional: add a subtle left border if input and button backgrounds are different and touch */
-    /* border-left: 1px solid #444; */
+    transition: var(--transition-fast);
+    font-size: 0;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
 }
 
-.question-input-area button:hover {
-    background-color: #E68A00; /* Darker orange on hover */
-    transform: none; /* Keep transform reset */
+.input-icon-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-secondary);
+    transform: scale(1.05);
 }
 
-.question-input-area button:active {
-    background-color: #CC7A00; /* Even darker for active state */
-    transform: none; /* Keep transform reset */
-    box-shadow: none; /* Keep box-shadow reset */
+.input-icon-btn:active {
+    transform: scale(0.95);
 }
 
+.input-icon-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* 마이크 버튼 특별 스타일 */
+.mic-btn.listening {
+    background: linear-gradient(135deg, #ff4444, #ff6666);
+    color: white;
+    animation: micPulse 1.5s ease-in-out infinite;
+    box-shadow: 0 0 20px rgba(255, 68, 68, 0.4);
+}
+
+@keyframes micPulse {
+    0%, 100% { 
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 68, 68, 0.7);
+    }
+    50% { 
+        transform: scale(1.1);
+        box-shadow: 0 0 0 8px rgba(255, 68, 68, 0);
+    }
+}
+
+/* 전송 버튼 특별 스타일 */
+.send-btn.active {
+    background: var(--primary-orange);
+    color: white;
+    box-shadow: 0 2px 8px rgba(255, 153, 0, 0.3);
+}
+
+.send-btn.active:hover {
+    background: var(--primary-orange-hover);
+    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.4);
+}
+
+.send-btn.processing {
+    background: var(--primary-orange);
+    color: white;
+    animation: processingPulse 2s ease-in-out infinite;
+}
+
+@keyframes processingPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* 일반 버튼 스타일 (시작 버튼용) */
+button:not(.input-icon-btn) {
+    background: linear-gradient(145deg, var(--primary-orange), #FFB84D);
+    color: white;
+    padding: 16px 32px;
+    border: none;
+    border-radius: var(--border-radius-xl);
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    font-family: inherit;
+    transition: var(--transition-normal);
+    box-shadow: 
+        0 4px 15px rgba(255, 153, 0, 0.3),
+        0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 300px;
+    position: relative;
+    overflow: hidden;
+}
+
+button:not(.input-icon-btn)::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left var(--transition-slow);
+}
+
+button:not(.input-icon-btn):hover::before {
+    left: 100%;
+}
+
+button:not(.input-icon-btn):hover {
+    background: linear-gradient(145deg, var(--primary-orange-hover), var(--primary-orange));
+    transform: translateY(-2px);
+    box-shadow: 
+        0 8px 25px rgba(255, 153, 0, 0.4),
+        0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+button:not(.input-icon-btn):active {
+    transform: translateY(0);
+    box-shadow: 
+        0 4px 15px rgba(255, 153, 0, 0.3),
+        0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
 /* 답변 섹션 */
 .intro-text-section {
-    flex: 1; /* 가용한 공간을 채움 */
-    min-width: 300px; /* 최소 너비 지정 */
+    flex: 1;
+    min-width: 350px;
     text-align: left;
-    background-color: #1A1A1A;
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(145deg, var(--bg-secondary), var(--bg-tertiary));
+    padding: 30px;
+    border-radius: var(--border-radius-md);
+    box-shadow: 
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    min-height: 300px;
 }
 
 .intro-text-section h2 {
-    color: #FF9900;
-    margin-bottom: 15px;
+    color: var(--primary-orange);
+    margin-bottom: 20px;
     font-size: 1.8em;
-    border-bottom: 2px solid #555555;
-    padding-bottom: 10px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary-orange), #FFB84D);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    border-bottom: 2px solid rgba(255, 153, 0, 0.3);
+    padding-bottom: 15px;
+    text-shadow: none;
+}
+
+@supports not (-webkit-background-clip: text) {
+    .intro-text-section h2 {
+        color: var(--primary-orange);
+        background: none;
+        -webkit-text-fill-color: inherit;
+    }
 }
 
 #responseText {
     line-height: 1.7;
     font-size: 1.1em;
-    color: #CCCCCC;
+    color: var(--text-secondary);
     white-space: pre-wrap;
     flex-grow: 1;
+    position: relative;
+    word-wrap: break-word;
 }
 
-/* 스피너 (로딩 애니메이션) 스타일 */
-.spinner {
-    border: 4px solid rgba(255, 255, 255, 0.2);
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border-left-color: #FF9900;
-    animation: spin 1s ease infinite;
-    display: none;
-    margin: 20px auto;
+/* 응답 로딩 상태 */
+.response-loading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 0;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.response-spinner svg {
+    color: var(--primary-orange);
+}
+
+/* 환영 메시지 */
+.welcome-message {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.welcome-message h3 {
+    color: var(--primary-orange);
+    font-size: 1.5em;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.welcome-message p {
+    color: var(--text-muted);
+    line-height: 1.6;
+    font-size: 1.05em;
+}
+
+/* 토스트 알림 시스템 */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 16px 20px;
+    border-radius: var(--border-radius-md);
+    color: white;
+    font-weight: 500;
+    z-index: 1000;
+    transform: translateX(400px);
+    transition: transform var(--transition-normal);
+    box-shadow: var(--shadow-medium);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    max-width: 350px;
+    min-width: 250px;
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.notification-icon {
+    font-size: 1.2em;
+    flex-shrink: 0;
+}
+
+.notification-message {
+    font-size: 0.95em;
+    line-height: 1.4;
+}
+
+.notification.info {
+    background: linear-gradient(145deg, rgba(59, 130, 246, 0.9), rgba(37, 99, 235, 0.9));
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.notification.warning {
+    background: linear-gradient(145deg, rgba(245, 158, 11, 0.9), rgba(217, 119, 6, 0.9));
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    color: #000;
+}
+
+.notification.error {
+    background: linear-gradient(145deg, rgba(239, 68, 68, 0.9), rgba(220, 38, 38, 0.9));
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.notification.success {
+    background: linear-gradient(145deg, rgba(34, 197, 94, 0.9), rgba(22, 163, 74, 0.9));
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+/* 스피너 애니메이션 */
+.spinner, .response-spinner svg, .send-btn.processing svg {
+    animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
@@ -253,18 +587,22 @@ button:active {
     100% { transform: rotate(360deg); }
 }
 
-/* 푸터 섹션 스타일 */
+/* 푸터 섹션 */
 .footer-section {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 30px 40px;
+    padding: 40px 40px 30px;
     box-sizing: border-box;
-    color: #f0f2f5;
+    color: var(--text-primary);
     font-size: 1em;
     margin-top: auto;
-    gap: 10px;
+    gap: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border-color);
 }
 
 .footer-logo {
@@ -272,6 +610,7 @@ button:active {
     justify-content: center;
     align-items: center;
     margin-bottom: 10px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 .footer-logo img {
@@ -279,16 +618,32 @@ button:active {
     height: auto;
     max-width: 150px;
     min-width: 80px;
+    transition: transform var(--transition-normal);
+}
+
+.footer-logo img:hover {
+    transform: scale(1.05);
 }
 
 .footer-email {
     color: #B0C4DE;
+    opacity: 0.8;
+    transition: opacity var(--transition-normal);
 }
 
-/* 모바일 반응형 디자인 */
+.footer-email:hover {
+    opacity: 1;
+}
+
+/* 반응형 디자인 */
 @media (max-width: 1024px) {
     .main-heading-section h1 {
         font-size: 4.5em;
+    }
+    
+    .main-content-container {
+        gap: 30px;
+        padding: 30px;
     }
 }
 
@@ -303,52 +658,93 @@ button:active {
     .main-heading-section h1 {
         font-size: 3.5em;
     }
-    .main-heading-section {
-        margin-left: auto;
-        margin-right: auto;
-    }
+    
     .main-content-container {
         flex-direction: column;
-        gap: 20px;
-        padding: 20px;
+        gap: 25px;
+        padding: 25px;
+        border-radius: var(--border-radius-md);
     }
+    
     .avatar-question-section,
     .intro-text-section {
         min-width: unset;
         width: 100%;
     }
-    /* General button adjustments for mobile if needed, though specific one is handled */
-    /* button {
-        padding: 12px 25px;
-        font-size: 1em;
-    } */
-    /* #questionInput {
-        font-size: 1em;
-    } */
-    /* .question-input-area specific adjustments might be needed too if it breaks on mobile */
+
+    .question-input-area {
+        max-width: 100%;
+    }
+
+    .notification {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        transform: translateY(-100px);
+        max-width: none;
+    }
+
+    .notification.show {
+        transform: translateY(0);
+    }
+
+    #questionInput {
+        font-size: 16px; /* iOS zoom 방지 */
+    }
 }
 
 @media (max-width: 480px) {
     .main-heading-section h1 {
         font-size: 2.5em;
     }
+    
     .top-menu-bar {
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
+        padding: 15px 20px;
     }
+    
     .footer-section {
         font-size: 0.9em;
+        padding: 30px 20px 20px;
     }
-    /* Further adjustments for the input area on very small screens */
-    .question-input-area {
-        max-width: 100%; /* Allow full width */
-        /* Consider flex-direction: column if they don't fit side-by-side */
+    
+    .intro-text-section {
+        padding: 20px;
+        min-height: 250px;
     }
-    #questionInput, .question-input-area button {
-        font-size: 1em; /* Adjust font size for smaller screens */
+
+    .intro-text-section h2 {
+        font-size: 1.5em;
     }
-    .question-input-area button {
-        padding: 12px 15px; /* Reduce button padding */
+
+    #responseText {
+        font-size: 1em;
+    }
+
+    .input-icon-btn {
+        width: 36px;
+        height: 36px;
+    }
+
+    .input-wrapper {
+        padding: 14px 18px;
+    }
+}
+
+/* 접근성 개선 */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* 다크모드 지원 (이미 다크 테마이지만 시스템 설정 고려) */
+@media (prefers-color-scheme: light) {
+    :root {
+        --text-muted: #666666;
     }
 }
