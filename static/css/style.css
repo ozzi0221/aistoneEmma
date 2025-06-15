@@ -435,6 +435,71 @@ button:not(.input-icon-btn):active {
         0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* 음성 제어 버튼 스타일 - 세련된 디자인 */
+.speech-controls {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-bottom: 15px;
+    padding: 0;
+    border: none;
+    opacity: 0.7;
+    transition: opacity var(--transition-normal);
+}
+
+.speech-controls:hover {
+    opacity: 1;
+}
+
+.control-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.75em;
+    font-weight: 400;
+    font-family: inherit;
+    transition: all var(--transition-fast);
+    min-width: auto;
+    box-shadow: none;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.control-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: var(--text-secondary);
+    transform: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.control-btn:active {
+    transform: scale(0.98);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.control-btn.disabled {
+    background: rgba(255, 255, 255, 0.03);
+    color: rgba(136, 136, 136, 0.5);
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.control-btn.disabled:hover {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.08);
+    color: rgba(136, 136, 136, 0.5);
+    transform: none;
+    box-shadow: none;
+}
+
 /* 답변 섹션 */
 .intro-text-section {
     flex: 1;
@@ -674,6 +739,19 @@ button:not(.input-icon-btn):active {
 
     .question-input-area {
         max-width: 100%;
+    }
+    
+    /* 모바일에서 음성 제어 버튼 조정 */
+    .speech-controls {
+        gap: 6px;
+        margin-bottom: 10px;
+        opacity: 0.8;
+    }
+    
+    .control-btn {
+        padding: 5px 10px;
+        font-size: 0.7em;
+        border-radius: 4px;
     }
 
     .notification {
