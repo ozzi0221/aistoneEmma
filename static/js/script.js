@@ -256,6 +256,118 @@ document.addEventListener('DOMContentLoaded', () => {
         sendButton.classList.toggle('active', hasText && !isProcessing);
     };
 
+    // 음성 관리 클래스 (스트리밍 TTS 지원)
+    class SpeechManager {
+        constructor() {
+            this.speechQueue = [];
+            this.isSpeaking = false;
+            this.isEnabled = true;
+            this.currentUtterance = null;
+        }
+        
+        async addToQueue(text) {
+            if (!this.isEnabled || !text || text.trim().length < 2) return;
+            
+            this.speechQueue.push(text.trim());
+            
+            if (!this.isSpeaking) {
+                this.processQueue();
+            }
+        }
+        
+        async processQueue() {
+            this.isSpeaking = true;
+            
+            while (this.speechQueue.length > 0 && this.isEnabled) {
+                const text = this.speechQueue.shift();
+                await this.speak(text);
+            }
+            
+            this.isSpeaking = false;
+            
+            // 모든 음성 재생이 끝나면 idle 비디오로 전환
+            if (currentAgent && currentAgent.video_idle) {
+                avatarVideo.src = `/static/video/${currentAgent.video_idle}`;
+                avatarVideo.load();
+                avatarVideo.play().catch(e => console.error("Error playing idle video after speech queue completed:", e));
+            }
+        }
+        
+        async speak(text) {
+            return new Promise((resolve) => {
+                if (!this.isEnabled) {
+                    resolve();
+                    return;
+                }
+                
+                if (!('speechSynthesis' in window)) {
+                    showNotification("이 브라우저는 음성 합성을 지원하지 않습니다.", 'error');
+                    resolve();
+                    return;
+                }
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'ko-KR';
+                utterance.volume = 1;
+                utterance.rate = 1.0;
+                utterance.pitch = 1.0;
+                
+                this.currentUtterance = utterance;
+                
+                utterance.onstart = () => {
+                    if (currentAgent && currentAgent.video_speaking) {
+                        avatarVideo.src = `/static/video/${currentAgent.video_speaking}`;
+                        avatarVideo.load();
+                        avatarVideo.play().catch(e => console.error("Error playing speaking video:", e));
+                    }
+                };
+                
+                utterance.onend = () => {
+                    this.currentUtterance = null;
+                    resolve();
+                };
+                
+                utterance.onerror = (event) => {
+                    console.error('Speech synthesis error:', event.error);
+                    this.currentUtterance = null;
+                    resolve();
+                };
+                
+                try {
+                    speechSynthesis.speak(utterance);
+                } catch (e) {
+                    console.error("SpeechSynthesis.speak() call failed:", e);
+                    resolve();
+                }
+            });
+        }
+        
+        stop() {
+            this.isEnabled = false;
+            this.speechQueue = [];
+            
+            if (speechSynthesis.speaking) {
+                speechSynthesis.cancel();
+            }
+            
+            setTimeout(() => {
+                this.isEnabled = true;
+            }, 100);
+            
+            this.isSpeaking = false;
+            this.currentUtterance = null;
+        }
+    }
+    
+    // 문장 완성 감지 함수
+    const isSentenceComplete = (text) => {
+        const sentenceEnders = /[.!?。！？]\s*$/;
+        return sentenceEnders.test(text.trim());
+    };
+    
+    // 전역 SpeechManager 인스턴스
+    const speechManager = new SpeechManager();
+
     // 음성 인식 토글
     const toggleSpeechRecognition = () => {
         if (!recognition) {
@@ -334,7 +446,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // 질문 전송 및 답변 처리
+    // 질문 전송 및 답변 처리 (스트리밍 버전)
     const askAvatar = async () => {
         const question = questionInput.value.trim();
         if (!question) {
@@ -350,6 +462,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         isProcessing = true;
         updateButtonStates();
+        
+        // 기존 음성 중지
+        speechManager.stop();
         
         // 응답 영역에 로딩 상태 표시
         responseTextElement.innerHTML = `
@@ -381,7 +496,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const response = await fetch('/ask_avatar', {
+            // 스트리밍 API 호출
+            const response = await fetch('/ask_avatar_stream', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -393,12 +509,61 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const data = await response.json();
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let fullResponse = '';
+            let currentSentence = '';
             
-            // 타이핑 애니메이션으로 응답 표시
-            typewriterEffect(responseTextElement, data.response, () => {
-                speak(data.response);
-            });
+            // 응답 영역 초기화
+            responseTextElement.innerHTML = '';
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value);
+                const lines = chunk.split('\n');
+
+                for (const line of lines) {
+                    if (line.startsWith('data: ')) {
+                        try {
+                            const data = JSON.parse(line.slice(6));
+                            
+                            if (data.error) {
+                                console.error('스트리밍 오류:', data.error);
+                                responseTextElement.innerHTML = data.error;
+                                showNotification(data.error, 'error');
+                                break;
+                            }
+                            
+                            if (data.chunk) {
+                                fullResponse = data.full;
+                                currentSentence += data.chunk;
+                                
+                                // 텍스트 즉시 표시 (타이핑 효과 없이)
+                                responseTextElement.textContent = fullResponse;
+                                
+                                // 문장이 완성되었는지 확인
+                                if (isSentenceComplete(currentSentence)) {
+                                    // 완성된 문장을 음성 큐에 추가
+                                    speechManager.addToQueue(currentSentence.trim());
+                                    currentSentence = '';
+                                }
+                            }
+                            
+                            if (data.complete) {
+                                // 마지막 남은 텍스트도 음성으로 변환
+                                if (currentSentence.trim()) {
+                                    speechManager.addToQueue(currentSentence.trim());
+                                }
+                                break;
+                            }
+                        } catch (parseError) {
+                            console.error('JSON 파싱 오류:', parseError);
+                        }
+                    }
+                }
+            }
 
             showNotification('답변이 생성되었습니다!', 'success');
 
@@ -420,23 +585,50 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // 타이핑 애니메이션 효과
-    const typewriterEffect = (element, text, callback) => {
-        element.innerHTML = '';
-        let index = 0;
-        const speed = 30; // 타이핑 속도 (ms)
-
-        const typeChar = () => {
-            if (index < text.length) {
-                element.innerHTML += text.charAt(index);
-                index++;
-                setTimeout(typeChar, speed);
-            } else if (callback) {
-                callback();
+    // 사용자가 새 질문하면 기존 응답 중단
+    const handleNewQuestion = (userInput) => {
+        speechManager.stop(); // 기존 음성 중단
+        responseTextElement.innerHTML = ''; // 기존 텍스트 지우기
+        // 새 스트리밍 시작
+        askAvatar();
+    };
+    
+    // 음성 제어 버튼 추가
+    const createSpeechControls = () => {
+        const controlsContainer = document.createElement('div');
+        controlsContainer.className = 'speech-controls';
+        controlsContainer.innerHTML = `
+            <button id="toggleSpeech" class="control-btn" title="음성 ON/OFF">
+                음성 ON
+            </button>
+            <button id="stopSpeech" class="control-btn" title="음성 중지">
+                중지
+            </button>
+        `;
+        
+        // 응답 영역 위에 추가
+        const responseSection = document.querySelector('.intro-text-section');
+        responseSection.insertBefore(controlsContainer, responseSection.firstChild);
+        
+        // 이벤트 리스너 추가
+        document.getElementById('toggleSpeech').addEventListener('click', () => {
+            speechManager.isEnabled = !speechManager.isEnabled;
+            const button = document.getElementById('toggleSpeech');
+            
+            if (speechManager.isEnabled) {
+                button.textContent = '음성 ON';
+                button.classList.remove('disabled');
+            } else {
+                button.textContent = '음성 OFF';
+                button.classList.add('disabled');
+                speechManager.stop();
             }
-        };
-
-        typeChar();
+        });
+        
+        document.getElementById('stopSpeech').addEventListener('click', () => {
+            speechManager.stop();
+            showNotification('음성이 중지되었습니다.', 'info');
+        });
     };
 
     // 입력 이벤트 리스너
@@ -480,6 +672,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 컴팩트 버튼들 생성
     createInputButtons();
+    
+    // 음성 제어 버튼 생성
+    createSpeechControls();
 
     // 전역 함수로 대화 초기화 함수 등록 (HTML에서 호출용)
     window.resetConversation = () => {
@@ -504,6 +699,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (recognition && isListening) {
             recognition.stop();
         }
+        
+        // 음성 관리자 초기화
+        speechManager.stop();
         
         updateButtonStates();
         
