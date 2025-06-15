@@ -467,8 +467,8 @@ button:not(.input-icon-btn):active {
     transition: all var(--transition-fast);
     min-width: auto;
     box-shadow: none;
-    backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
 }
 
 .control-btn:hover {
