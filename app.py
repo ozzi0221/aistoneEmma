@@ -1,7 +1,7 @@
 # app.py
 from dotenv import load_dotenv
 load_dotenv() # .env 파일에서 환경 변수를 로드합니다.
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, Response
 from flask_cors import CORS
 import google.generativeai as genai
 import os
@@ -208,6 +208,89 @@ def ask_avatar():
     except Exception as e:
         print(f"Error during RAG process: {e}")
         return jsonify({"response": "죄송합니다. 질문에 답변하는 데 문제가 발생했습니다."}), 500
+
+@app.route('/ask_avatar_stream', methods=['POST'])
+def ask_avatar_stream():
+    """사용자 질문을 받아 RAG를 통해 스트리밍으로 답변을 생성합니다."""
+    user_question = request.json.get('question', '').strip()
+    if not user_question:
+        return jsonify({"error": "질문을 입력해주세요."}), 400
+
+    if not knowledge_base_chunks or not chunk_embeddings:
+        return jsonify({"error": "지식 베이스가 초기화되지 않았습니다. 잠시 후 다시 시도해주세요."}), 500
+
+    def generate_stream():
+        try:
+            # 1. 질문 임베딩 생성
+            question_embedding = get_embedding(user_question)
+            if not question_embedding:
+                yield f"data: {json.dumps({'error': '질문 임베딩 생성 실패'})}\n\n"
+                return
+
+            # 2. 관련 청크 검색 (유사도 기반)
+            similarities = []
+            for i, embed in enumerate(chunk_embeddings):
+                if embed:
+                    sim = cosine_similarity(np.array(question_embedding).reshape(1, -1), np.array(embed).reshape(1, -1))[0][0]
+                    similarities.append((sim, i))
+            
+            similarities.sort(key=lambda x: x[0], reverse=True)
+            top_k_indices = [idx for sim, idx in similarities[:TOP_K_RETRIEVAL]]
+            retrieved_chunks = [knowledge_base_chunks[i] for i in top_k_indices]
+            
+            # 3. LLM 프롬프트 구성
+            context = "\n".join(retrieved_chunks)
+            default_agent_id = list(agent_data.keys())[0]
+            current_agent = agent_data.get(default_agent_id)
+            personality = current_agent.get('personality', '친절하고 전문적인 AI 비서')
+
+            prompt = f"""
+            당신은 AI Stone의 {personality} 아바타입니다.
+            제공된 정보를 바탕으로 사용자의 질문에 답변하세요.
+            만약 제공된 정보만으로는 답변할 수 없다면, '정보가 부족하여 답변하기 어렵습니다.'라고 말하세요.
+            답변은 친절하고 간결하게 해주세요.
+
+            [제공된 정보]:
+            {context}
+
+            [사용자 질문]:
+            {user_question}
+
+            [AI Stone 아바타 답변]:
+            """
+
+            # 4. Gemini 스트리밍 API 호출
+            model = genai.GenerativeModel('gemini-1.5-flash')
+            response = model.generate_content(prompt, stream=True)
+            
+            full_response = ''
+            for chunk in response:
+                if chunk.text:
+                    chunk_text = chunk.text
+                    # 마크다운 제거
+                    chunk_text = re.sub(r'```python|```json|```text|```', '', chunk_text)
+                    chunk_text = re.sub(r'\*\*(.*?)\*\*', r'\1', chunk_text)
+                    
+                    full_response += chunk_text
+                    
+                    yield f"data: {json.dumps({'chunk': chunk_text, 'full': full_response, 'complete': False})}\n\n"
+            
+            # 완료 신호
+            yield f"data: {json.dumps({'chunk': '', 'full': full_response, 'complete': True})}\n\n"
+            
+        except Exception as e:
+            print(f"Error during streaming RAG process: {e}")
+            yield f"data: {json.dumps({'error': '답변 생성 중 오류가 발생했습니다.'})}\n\n"
+    
+    return Response(
+        generate_stream(),
+        mimetype='text/plain',
+        headers={
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive',
+            'Access-Control-Allow-Origin': '*'
+        }
+    )
 
 # 서버 실행
 if __name__ == '__main__':
