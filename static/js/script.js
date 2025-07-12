@@ -395,6 +395,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await response.json();
             
+            
             speak(data.response);  // 먼저 음성 재생 시작
             typewriterEffect(responseTextElement, data.response); // 타이핑 효과 시작
 
@@ -461,7 +462,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         responseTextElement.innerHTML = `
             <div class="welcome-message">
-                <h3>🤖 AI Stone에 오신 것을 환영합니다!</h3>
+                <h3>AI Stone에 오신 것을 환영합니다!</h3>
                 <p>음성 또는 텍스트로 질문해보세요. 친절하고 정확한 답변을 제공해드리겠습니다.</p>
             </div>
         `;
@@ -488,7 +489,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // 시작 버튼 다시 표시
         startButton.style.display = 'block';
-        startButton.textContent = '🚀 대화 시작하기';
+        startButton.textContent = '대화 시작하기';
         
         // 입력창 비활성화
         const inputArea = document.querySelector('.question-input-area');
@@ -510,3 +511,4 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('대화가 초기화되었습니다.');
     };
 });
+
