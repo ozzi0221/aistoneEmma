@@ -395,10 +395,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await response.json();
             
-            // 타이핑 애니메이션으로 응답 표시
-            typewriterEffect(responseTextElement, data.response, () => {
-                speak(data.response);
-            });
+            speak(data.response);  // 먼저 음성 재생 시작
+            typewriterEffect(responseTextElement, data.response); // 타이핑 효과 시작
 
             showNotification('답변이 생성되었습니다!', 'success');
 
