@@ -5,11 +5,9 @@ import os
 # Gemini API Key 설정
 # 환경 변수에서 API 키를 가져옵니다.
 # 'GOOGLE_API_KEY' 환경 변수에 설정된 값을 사용합니다.
-GEMINI_API_KEY = os.getenv('GOOGLE_API_KEY')
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY') or os.getenv('GOOGLE_API_KEY')
 if not GEMINI_API_KEY:
-    # 환경 변수가 설정되지 않았을 경우 에러 메시지를 출력하고 종료합니다.
-    # 배포 환경에서는 이 부분이 중요합니다.
-    raise ValueError("GOOGLE_API_KEY 환경 변수가 설정되지 않았습니다. API 키를 설정해주세요.")
+    raise ValueError("GEMINI_API_KEY 환경 변수가 설정되지 않았습니다. API 키를 설정해주세요.")
 
 # ... (나머지 설정들) ...
 
